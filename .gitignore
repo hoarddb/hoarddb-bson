@@ -1,0 +1,4 @@
+.worktrees/
+go.work
+go.work.sum
+.ci-tools/

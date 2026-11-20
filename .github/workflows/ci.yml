@@ -1,0 +1,61 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        go-version: ['1.23.0']
+        # The Go version hoardDB's go.mod declares is the server-go job below.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+      - name: vet
+        run: |
+          GOWORK=off go vet ./...
+          if [ -d oracle ]; then (cd oracle && GOWORK=off go vet ./...); fi
+      - name: test with the race detector
+        run: |
+          GOWORK=off go test -race ./...
+          if [ -d oracle ]; then (cd oracle && GOWORK=off go test -race ./...); fi
+      - name: allocation tests without the race detector
+        run: |
+          GOWORK=off go test -run 'Allocs' ./...
+          if [ -d oracle ]; then (cd oracle && GOWORK=off go test -run 'Allocs' ./...); fi
+      - name: lint
+        run: |
+          bin=$(bash scripts/lint-tool.sh --lint-bin)
+          GOWORK=off "$bin" run ./...
+          if [ -d oracle ]; then (cd oracle && GOWORK=off "$bin" run ./...); fi
+      - name: synced files
+        run: if [ -f scripts/check-synced.sh ]; then bash scripts/check-synced.sh; fi
+  server-go:
+    # Runs the tests on the Go version hoardDB's go.mod declares, read from
+    # .server-go-version (copied from the hoardDB server repository and
+    # hash-checked by scripts/check-synced.sh). The presence guard keeps the job
+    # green in a checkout that has not been synced yet.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: check for .server-go-version
+        id: server
+        run: |
+          if [ -f .server-go-version ]; then echo "present=true" >> "$GITHUB_OUTPUT"; fi
+      - uses: actions/setup-go@v5
+        if: steps.server.outputs.present == 'true'
+        with:
+          go-version-file: .server-go-version
+      - name: test with the race detector
+        if: steps.server.outputs.present == 'true'
+        run: GOWORK=off go test -race ./...

@@ -1,0 +1,2 @@
+Portions Copyright (C) MongoDB, Inc. 2017-present, Apache-2.0. Portions based on gopkg.in/mgo.v2/bson, Copyright (c) 2010-2013 Gustavo Niemeyer, BSD-2-Clause.
+Portions derived from hoardDB's server/nesting_depth.go, licensed to this library under Apache-2.0 by its copyright holder.

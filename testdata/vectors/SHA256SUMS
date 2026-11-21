@@ -1,5 +1,5 @@
-398edf52e9a040ab731427d0ce7fcab81b9de6bbf79a249405d0cbd51e674cdc  driver-vectors/v1.json
 425bb2cc2d977d5f68021ab41ecdc3c4cb8291594c41cc031dd234214eeaaf93  bson-vectors/v1.json
 78e490f20d61b9f77281c7b5cc04016cdb5e637731003c02a0092fa86b06db18  driver-vectors/consume-constants.json
 9217820457f2d1ed92ceeeae09665269e17dd7e14e79bab94ac86e8d7b1773c3  ../../.server-go-version
+ca9f9b4d2c3cd3f33c86d5dcfaa1b36243d57e4af71bd1e5902aa091b2f437e7  driver-vectors/v1.json
 d484de92cb4cebadcfb3a28a89b8f82fbce04208cffb9486e268499a4f287ecf  ../../scripts/lint-tool.sh
